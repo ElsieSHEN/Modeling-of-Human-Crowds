@@ -24,8 +24,8 @@ def init_grid(n):
 
 # pedestrian: red cell
 def color_p(n, x, y):
-    a = -200 + (x+1)*w
-    b = -200 + (n-x-1)*w
+    a = -200 + (x-1)*w
+    b = -200 + (n-y)*w
     turtle.goto(a, b)
     turtle.fillcolor('red')
     turtle.begin_fill()
@@ -37,8 +37,8 @@ def color_p(n, x, y):
 
 # target: yellow cell
 def color_t(n, x, y):
-    a = -200 + (x+1)*w
-    b = -200 + (n-x-1)*w
+    a = -200 + (x-1)*w
+    b = -200 + (n-y)*w
     turtle.goto(a, b)
     turtle.fillcolor('yellow')
     turtle.begin_fill()
@@ -50,8 +50,8 @@ def color_t(n, x, y):
 
 # obstacle: violet cell
 def color_o(n, x, y):
-    a = -200 + (x+1)*w
-    b = -200 + (n-x-1)*w
+    a = -200 + (x-1)*w
+    b = -200 + (n-y)*w
     turtle.goto(a, b)
     turtle.fillcolor('violet')
     turtle.begin_fill()
@@ -63,8 +63,8 @@ def color_o(n, x, y):
 
 # empty: white cell
 def color_e(n, x, y):
-    a = -200 + (x+1)*w
-    b = -200 + (n-x-1)*w
+    a = -200 + (x-1)*w
+    b = -200 + (n-y)*w
     turtle.goto(a, b)
     turtle.fillcolor('white')
     turtle.begin_fill()
