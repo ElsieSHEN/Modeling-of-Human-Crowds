@@ -51,7 +51,6 @@ def cost(ped, neighbors, method='euclidean', rmax=0):
             else:
                 val = math.exp(1/(dis**2 - rmax**2))
                 distances.append(val)
-    print(distances)
     return distances
 
 def next_step(ped, n, method='euclidean', rmax=0):
@@ -70,13 +69,11 @@ def next_step(ped, n, method='euclidean', rmax=0):
     dg.color_e(50, ped[0], ped[1])
 
 
-def task2():
-    grid = np.zeros((50, 50), dtype=int)
-    dg.init_grid(50)
-    set_pedestrian(5, 25)
-    set_target(25, 25)
-    for i in range(25):
-        next_step(pedestrian[0], 50)
-    turtle.done()
 
-task2()
+grid = np.zeros((50, 50), dtype=int)
+dg.init_grid(50)
+set_pedestrian(5, 25)
+set_target(25, 25)
+for i in range(25):
+    next_step(pedestrian[0], 50)
+turtle.done()
