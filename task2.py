@@ -11,7 +11,7 @@ from utils import *
 
 from utils import *
 
-task2 = Cellular(50, 'euclidean')
+task2 = Cellular(50, method='euclidean')
 
 dg.init_grid(50)
 task2.set_pedestrian(5, 25)

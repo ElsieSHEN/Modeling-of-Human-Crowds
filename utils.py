@@ -20,15 +20,51 @@ class Cellular():
         dg.color_t(50, x, y)
         self.target = (x, y)
 
+
+    def find_next(self, ped, target, neighbors, method, rmax):
+        distances = []
+        x = target[0]
+        y = target[1]
+        if self.method == 'euclidean':             
+            for i in neighbors: 
+                a = i[0]
+                b = i[1]
+                dis = math.sqrt((x-a)**2 + (y-b)**2)               
+                distances.append(dis)
+            idx = distances.index(min(distances)) 
+            return idx     
+        elif self.method == 'avoidance':
+            tmp = [ped]
+            tmp.extend(neighbors)
+            # dis0 = math.sqrt((x-ped[0])**2 + (y-ped[1])**2)
+            for i in neighbors:
+                a = i[0]
+                b = i[1]
+                dis = math.sqrt((x-a)**2 + (y-b)**2)
+                for j in self.pedestrian:
+                    r = math.sqrt((a-j[0])**2 + (b-j[1])**2)
+                    if r < rmax:
+                        dis = math.exp(1/(r**2 - rmax**2)) + dis
+                distances.append(dis)
+
+            max_dis = max(distances)
+            idx = distances.index(max_dis)
+            
+            if idx == 0:
+                idx = -1
+                
+            return idx
+
     def next_step(self, ped, n, method='euclidean', rmax=0):
         idx_current = self.pedestrian.index(ped)
         neighbors = find_neighbors(ped[0], ped[1], n)
         for i in neighbors:
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
-        distances = cost(self.target, neighbors, method, rmax)
-        idx = distances.index(min(distances))
-        next_cell = neighbors[idx]
+        idx = self.find_next(ped, self.target, neighbors, method, rmax)
+        if idx == -1:
+            return
+        next_cell = neighbors[idx-1]
         self.pedestrian[idx_current] = next_cell
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
         dg.color_p(50, next_cell[0], next_cell[1])
@@ -48,21 +84,5 @@ def find_neighbors(x, y, n):
     return neighbors
   
 
-def cost(target, neighbors, method='euclidean', rmax=0):
-    distances = []
-    x = target[0]
-    y = target[1]
-    for i in neighbors:
-        a = i[0]
-        b = i[1]
-        dis = math.sqrt((x-a)**2 + (y-b)**2)
-        if method == 'euclidean':             
-            distances.append(dis)
-        elif method == 'avoidance':
-            if dis >= rmax:
-                distances.append(0)
-            else:
-                val = math.exp(1/(dis**2 - rmax**2))
-                distances.append(val)
-    return distances
+
 
