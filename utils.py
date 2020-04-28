@@ -5,79 +5,101 @@ import draw_grid as dg
 
 class Cellular():
     def __init__(self, n, method, pedestrian=[]):
-        self.n = n
-        self.grid = np.zeros((self.n, self.n), dtype=int)
+        self.n = n       
         self.method = method
         self.pedestrian = pedestrian
+        self.grid = np.zeros((self.n, self.n), dtype=int)
+        self.dis_matrix = np.zeros(((self.n, self.n)))
     
+    def set_grid(self, n):        
+        dg.init_grid(self.n)
+
     def set_pedestrian(self, x, y):
         self.grid[x-1][y-1] = 1
         self.pedestrian.append(tuple((x, y)))
-        dg.color_p(50, x, y)
+        dg.color_p(self.n, x, y)
 
     def set_target(self, x, y):
         self.grid[x-1][y-1] = 3
-        dg.color_t(50, x, y)
+        dg.color_t(self.n, x, y)
         self.target = (x, y)
 
+    def set_obstacle(self, x, y):
+        self.grid[x-1][y-1] = 2
+        dg.color_o(self.n, x, y)
+        self.obstacle = (x, y)
 
-    def find_next(self, ped, target, neighbors, method, rmax):
+    def set_dis_matrix(self, ped, rmax, neighbors):
+        a = self.target[0]
+        b = self.target[1]
+        for i in range(self.n):
+            for j in range(self.n):
+                dis = math.sqrt((a-i)**2 + (b-j)**2)
+                if self.grid[i][j] == 2:
+                    dis += 999
+                self.dis_matrix[i][j] = dis
+        # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
+        
+        
+    def find_next(self, ped, target, neighbors, rmax):
+        self.set_dis_matrix(ped, rmax, neighbors)
+        tmp = [ped]
+        tmp.extend(neighbors)
         distances = []
-        x = target[0]
-        y = target[1]
-        if self.method == 'euclidean':             
-            for i in neighbors: 
-                a = i[0]
-                b = i[1]
-                dis = math.sqrt((x-a)**2 + (y-b)**2)               
-                distances.append(dis)
-            idx = distances.index(min(distances)) 
-            return idx     
+
+        if self.method == 'euclidean':
+            for i in tmp:
+                distances.append(self.dis_matrix[i[0]-1][i[1]-1])      
+
         elif self.method == 'avoidance':
             tmp = [ped]
             tmp.extend(neighbors)
             for i in tmp:
-                a = i[0]
-                b = i[1]
-                dis = math.sqrt((x-a)**2 + (y-b)**2)
+                res = 0
+                x = i[0]
+                y = i[1]
                 for j in self.pedestrian:
-                    r = math.sqrt((a-j[0])**2 + (b-j[1])**2)
-                    if r < rmax:
-                        dis = math.exp(1/(r**2 - rmax**2)) + dis
+                        r = math.sqrt((x-j[0])**2 + (y-j[1])**2)                    
+                        if r < rmax:
+                            res += math.exp(1/(r**2 - rmax**2))
+                dis = self.dis_matrix[x-1][y-1] + res
                 distances.append(dis)
+        print(distances)
+        idx = distances.index(min(distances))
+        if idx == 0:
+            return -1
+        else:
+            return idx-1
 
-            min_dis = min(distances)
-            idx = distances.index(min_dis)
-            
-            if idx == 0:
-                idx = -1
-                
-            return idx
-
-    def next_step(self, ped, n, method='euclidean', rmax=0):
+    def next_step(self, ped, n, rmax=0):
         idx_current = self.pedestrian.index(ped)
         neighbors = find_neighbors(ped[0], ped[1], n)
         for i in neighbors:
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
-        idx = self.find_next(ped, self.target, neighbors, method, rmax)
+        idx = self.find_next(ped, self.target, neighbors, rmax)
+        print(idx)
         if idx == -1:
             return
-        next_cell = neighbors[idx-1]
+        next_cell = neighbors[idx]
         self.pedestrian[idx_current] = next_cell
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
-        dg.color_p(50, next_cell[0], next_cell[1])
+        dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
-        dg.color_e(50, ped[0], ped[1])
-
+        dg.color_e(self.n, ped[0], ped[1])
 
 def find_neighbors(x, y, n):
     neighbors = []
-    p_neighbors = [(x+1, y), (x-1, y), (x+1, y+1), (x+1, y-1), 
-                   (x-1, y+1), (x-1, y-1), (x, y+1), (x, y-1)]
+    # p_neighbors = [(x+1, y), (x-1, y), (x+1, y+1), (x+1, y-1), 
+    #                (x-1, y+1), (x-1, y-1), (x, y+1), (x, y-1)]
+    p_neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
     for i in p_neighbors:
         a = i[0]
         b = i[1]
-        if a >= 0 and a < n and b >= 0 and b < n:
+        if a > 0 and a < n and b > 0 and b < n:
             neighbors.append(i)
     return neighbors
+    
+ 
+
+

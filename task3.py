@@ -9,12 +9,6 @@ from utils import *
 # 2: obstacle
 # 3: target
 
-from utils import *
-
-print("Enter your pedestrians and target corrdinates like (x, y)")
-n = int(input("Enter n:"))
-m = input('Choose a cost function (euclidean/avoidance):')
-
 task3 = Cellular(50, method='avoidance')
 
 dg.init_grid(50)

@@ -9,8 +9,6 @@ from utils import *
 # 2: obstacle
 # 3: target
 
-from utils import *
-
 task2 = Cellular(50, method='euclidean')
 
 dg.init_grid(50)
