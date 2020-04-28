@@ -3,7 +3,8 @@ import turtle
 def init_grid(n):
     global w
     w = 400 / n
-    turtle.speed(10)
+    #turtle.Turtle(visible=False)
+    turtle.speed('fastest')
     turtle.screensize()
     turtle.penup()
     turtle.pencolor('black')
