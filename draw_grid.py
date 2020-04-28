@@ -3,6 +3,7 @@ import turtle
 def init_grid(n):
     global w
     w = 400 / n
+    turtle.Turtle(visible=False)
     turtle.speed('fastest')
     turtle.screensize()
     turtle.penup()
@@ -20,7 +21,7 @@ def init_grid(n):
         turtle.pendown()
         turtle.forward(n*w)
         turtle.penup()
-    turtle.hideturtle()
+    #turtle.hideturtle()
 
 # pedestrian: red cell
 def color_p(n, x, y):
