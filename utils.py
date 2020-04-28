@@ -34,10 +34,12 @@ class Cellular():
         b = self.target[1]
         for i in range(self.n):
             for j in range(self.n):
-                dis = math.sqrt((a-i)**2 + (b-j)**2)
-                if self.grid[i][j] == 2:
-                    dis += 999
-                self.dis_matrix[i][j] = dis
+                if self.grid[i-1][j-1] == 2 or self.grid[i-1][j-1] == 1:
+                    dis = 999
+                else:
+                    dis = math.sqrt((a-i)**2 + (b-j)**2)/math.sqrt((self.n**2)*2)
+                    #dis = math.sqrt((a-i)**2 + (b-j)**2)
+                self.dis_matrix[i-1][j-1] = dis
         # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
         
         
@@ -60,7 +62,7 @@ class Cellular():
                 y = i[1]
                 for j in self.pedestrian:
                         r = math.sqrt((x-j[0])**2 + (y-j[1])**2)                    
-                        if r < rmax:
+                        if r < rmax and r != 0:
                             res += math.exp(1/(r**2 - rmax**2))
                 dis = self.dis_matrix[x-1][y-1] + res
                 distances.append(dis)
@@ -96,7 +98,7 @@ def find_neighbors(x, y, n):
     for i in p_neighbors:
         a = i[0]
         b = i[1]
-        if a > 0 and a < n and b > 0 and b < n:
+        if a > 0 and a <= n and b > 0 and b <= n:
             neighbors.append(i)
     return neighbors
     
