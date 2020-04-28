@@ -36,8 +36,7 @@ class Cellular():
         elif self.method == 'avoidance':
             tmp = [ped]
             tmp.extend(neighbors)
-            # dis0 = math.sqrt((x-ped[0])**2 + (y-ped[1])**2)
-            for i in neighbors:
+            for i in tmp:
                 a = i[0]
                 b = i[1]
                 dis = math.sqrt((x-a)**2 + (y-b)**2)
@@ -47,8 +46,8 @@ class Cellular():
                         dis = math.exp(1/(r**2 - rmax**2)) + dis
                 distances.append(dis)
 
-            max_dis = max(distances)
-            idx = distances.index(max_dis)
+            min_dis = min(distances)
+            idx = distances.index(min_dis)
             
             if idx == 0:
                 idx = -1
@@ -82,7 +81,3 @@ def find_neighbors(x, y, n):
         if a >= 0 and a < n and b >= 0 and b < n:
             neighbors.append(i)
     return neighbors
-  
-
-
-

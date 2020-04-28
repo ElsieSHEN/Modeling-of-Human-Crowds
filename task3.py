@@ -11,6 +11,10 @@ from utils import *
 
 from utils import *
 
+print("Enter your pedestrians and target corrdinates like (x, y)")
+n = int(input("Enter n:"))
+m = input('Choose a cost function (euclidean/avoidance):')
+
 task3 = Cellular(50, method='avoidance')
 
 dg.init_grid(50)
@@ -22,7 +26,7 @@ task3.set_pedestrian(25, 40)
 
 task3.set_target(25, 25)
 
-for i in range(25):
+for i in range(50):
     for p in task3.pedestrian:
         task3.next_step(p, 50, rmax=4)
 turtle.done()
