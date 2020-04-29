@@ -35,7 +35,7 @@ class Cellular():
         
         for i in range(self.n):
             for j in range(self.n):
-                dis = math.sqrt((a-i)**2 + (b-j)**2)
+                dis = math.sqrt(((a-1)-i)**2 + ((b-1)-j)**2)/math.sqrt((self.n**2)*2)
                 if self.grid[i][j] == 2:
                     dis += 999
                     
@@ -45,10 +45,10 @@ class Cellular():
                 elif self.method == 'avoidance':
                     res = 0                           
                     for k in self.pedestrian:
-                        r = math.sqrt((i-k[0])**2 + (j-k[1])**2)                    
+                        r = math.sqrt((i-(k[0]-1))**2 + (j-(k[1]-1))**2)                    
                         if r < rmax:
                             res += math.exp(1/(r**2 - rmax**2))
-                    dis = self.dis_matrix[i][j] + res
+                    dis += res
                     self.dis_matrix[i][j] = dis
         # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
         
@@ -75,6 +75,7 @@ class Cellular():
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
         idx = self.find_next(ped, self.target, neighbors, rmax)
+
         if idx == -1:
             return
         next_cell = neighbors[idx]
