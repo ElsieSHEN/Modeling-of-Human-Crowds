@@ -30,8 +30,8 @@ class Cellular():
         self.obstacle = (x, y)
 
     def set_dis_matrix(self, ped, rmax):
-        a = self.target[0]
-        b = self.target[1]
+        a = self.target[0] - 1
+        b = self.target[1] - 1
         
         for i in range(self.n):
             for j in range(self.n):
@@ -42,13 +42,11 @@ class Cellular():
                 if self.method == 'euclidean':
                     self.dis_matrix[i][j] = dis
 
-                elif self.method == 'avoidance':
-                    res = 0                           
+                elif self.method == 'avoidance':                          
                     for k in self.pedestrian:
-                        r = math.sqrt((i-k[0])**2 + (j-k[1])**2)                    
+                        r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)                    
                         if r < rmax:
-                            res += math.exp(1/(r**2 - rmax**2))
-                    dis = self.dis_matrix[i][j] + res
+                            dis += math.exp(1/(r**2 - rmax**2))
                     self.dis_matrix[i][j] = dis
         # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
         
@@ -60,7 +58,7 @@ class Cellular():
         distances = []
 
         for i in tmp:
-            distances.append(self.dis_matrix[i[0]-1][i[1]-1])      
+            distances.append(self.dis_matrix[i[0]-1][i[1]-1])     
 
         idx = distances.index(min(distances))
         if idx == 0:
@@ -78,6 +76,8 @@ class Cellular():
         if idx == -1:
             return
         next_cell = neighbors[idx]
+        if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
+            return
         self.pedestrian[idx_current] = next_cell
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
         dg.color_p(self.n, next_cell[0], next_cell[1])
@@ -91,7 +91,7 @@ class Cellular():
         for i in p_neighbors:
             a = i[0]
             b = i[1]
-            if a > 0 and a < self.n and b > 0 and b < self.n:
+            if a > 0 and a <= self.n and b > 0 and b <= self.n:
                 neighbors.append(i)
         return neighbors
 
