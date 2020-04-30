@@ -1,7 +1,8 @@
-import turtle
+#import turtle
+from matplotlib import pyplot as plt
 import numpy as np
 import math
-import draw_grid as dg
+#import draw_grid as dg
 from utils import *
 
 # 0: empty cell
@@ -10,9 +11,12 @@ from utils import *
 # 3: target
 
 n = 88
-task4_1 = Cellular(n, method='avoidance')
+task4_1 = Cellular(n, method='euclidean')
+ListofImages = []
+ListofImages.append(task4_1.grid)
 
-dg.init_grid(n)
+
+#dg.init_grid(n)
 
 
 # set horizontal walls
@@ -44,8 +48,16 @@ for i in range(1,17,2):
 task4_1.set_target(88, 44)
 
 
-for i in range(200):
+for i in range(5):
+    #ListofImages.append(task4_1.grid)
     for p in task4_1.pedestrian:
         task4_1.next_step(p, n, rmax=2)
-    
-turtle.done()
+        
+""" 
+#plot images
+for i in ListofImages:
+    i = i.transpose()
+    plt.imshow(i)
+    plt.show()        
+
+   """

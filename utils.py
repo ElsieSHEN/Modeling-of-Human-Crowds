@@ -1,7 +1,8 @@
-import turtle
+#import turtle
 import numpy as np
 import math
-import draw_grid as dg
+from matplotlib import pyplot as plt
+#import draw_grid as dg
 
 class Cellular():
     def __init__(self, n, method, pedestrian=[]):
@@ -11,22 +12,22 @@ class Cellular():
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
     
-    def set_grid(self, n):        
-        dg.init_grid(self.n)
+    #def set_grid(self, n):        
+        #dg.init_grid(self.n)
 
     def set_pedestrian(self, x, y):
         self.grid[x-1][y-1] = 1
         self.pedestrian.append(tuple((x, y)))
-        dg.color_p(self.n, x, y)
+        #dg.color_p(self.n, x, y)
 
     def set_target(self, x, y):
         self.grid[x-1][y-1] = 3
-        dg.color_t(self.n, x, y)
+        #dg.color_t(self.n, x, y)
         self.target = (x, y)
 
     def set_obstacle(self, x, y):
         self.grid[x-1][y-1] = 2
-        dg.color_o(self.n, x, y)
+        #dg.color_o(self.n, x, y)
         self.obstacle = (x, y)
 
     def set_dis_matrix(self, ped, rmax):
@@ -81,10 +82,10 @@ class Cellular():
             return
         self.pedestrian[idx_current] = next_cell
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
-        dg.color_p(self.n, next_cell[0], next_cell[1])
+        #dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
-        dg.color_e(self.n, ped[0], ped[1])
-
+        #dg.color_e(self.n, ped[0], ped[1])
+        
     def find_neighbors(self, x, y):
         neighbors = []
         # p_neighbors = [(x+1, y), (x-1, y), (x+1, y+1), (x+1, y-1), (x-1, y+1), (x-1, y-1), (x, y+1), (x, y-1)]
