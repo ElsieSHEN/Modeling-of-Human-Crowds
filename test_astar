@@ -1,0 +1,13 @@
+import threading
+import time
+import numpy as np
+import math
+
+(x,y) = 5
+grid = np.array((x,y))
+
+start = (1,1)
+goal = (4,4)
+
+
+

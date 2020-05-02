@@ -10,15 +10,15 @@ from utils import *
 # 2: obstacle
 # 3: target
 
-n = 88
-task4_1 = Cellular(n, method='euclidean')
-ListofImages = []
+n = 5
+task0 = Cellular(n, method='euclidean')
+
 #ListofImages.append(task4_1.grid)
 
 
 #dg.init_grid(n)
 
-
+"""
 # set horizontal walls
 for i in range(1,88):
     j1 = 26
@@ -38,24 +38,17 @@ for j in range(26,62):
         
         task4_1.set_obstacle(i,j)
          
-
+"""
 # set pedestrians
-for i in range(1,17,2):
-    for j in range(27,62,2):
-        task4_1.set_pedestrian(i,j)
+
+task0.set_pedestrian(1,1)
                
-
-task4_1.set_target(88, 44)
-
+task0.set_target(4,4)
+task0.set_obstacle(3,2)
 
 for i in range(5):
-    ListofImages.append(task4_1.grid)
-    for p in task4_1.pedestrian:
-            task4_1.next_step(p, n, rmax=2)
-         
-#plot images
-for i in ListofImages:
-    i = i.transpose()
-    plt.imshow(i)
-    plt.show()        
+    for p in task0.pedestrian:
+        task0.next_step(p, n, rmax=4)
 
+
+#came_from, cost_so_far = task0.maybe_dijkstra(task0.target, task0.pedestrian)

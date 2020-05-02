@@ -11,6 +11,8 @@ class Cellular():
         self.pedestrian = pedestrian
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
+        self.dis_dijkstra = np.zeros((self.n, self.n))
+        self.List_Images = []
     
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
@@ -49,9 +51,23 @@ class Cellular():
                         if r < rmax:
                             dis += math.exp(1/(r**2 - rmax**2))
                     self.dis_matrix[i][j] = dis
+                                        
         # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
+    def find_next_dijk(self, ped, target, neighbors, rmax):
+        self.set_dijkstra_field(target)
+        tmp = [ped]
+        tmp.extend(neighbors)
+        distances = []
         
-        
+        for i in tmp:
+            distances.append(self.dis_dijkstra[i[0]-1][i[1]-1])
+            
+        idx = distances.index(min(distances))
+        if idx == 0:
+            return -1
+        else:
+            return idx-1
+            
     def find_next(self, ped, target, neighbors, rmax):
         self.set_dis_matrix(ped, rmax)
         tmp = [ped]
@@ -73,7 +89,7 @@ class Cellular():
         for i in neighbors:
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
-        idx = self.find_next(ped, self.target, neighbors, rmax)
+        idx = self.find_next_dijk(ped, self.target, neighbors, rmax)
 
         if idx == -1:
             return
@@ -122,3 +138,34 @@ class Cellular():
 
         print(path)
         return path
+    
+    def set_dijkstra_field(self, tar):
+        frontier = [tar]
+        came_from = {}
+        came_from[tar] = None
+        cost_so_far = {}
+        cost_so_far[tar] = 0
+        #initialize cost array. set obstacles to nan
+        #cost_arr = np.zeros((self.n,self.n))
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.grid[i][j] == 2:
+                    self.dis_dijkstra[i][j] = np.nan
+                    
+        while frontier:
+            curr = frontier.pop(0)         
+            neighbors = self.find_neighbors(curr[0], curr[1])
+            for neighbor in neighbors:
+                new_cost = cost_so_far[curr] + 1
+                if neighbor not in cost_so_far and (np.isnan(self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1])==0):
+                    cost_so_far[neighbor] = new_cost
+                    self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1] = new_cost
+                    frontier.append(neighbor)
+                    came_from[neighbor] = curr
+        
+        self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
+        print(self.dis_dijkstra)
+        return came_from, cost_so_far, self.dis_dijkstra
+              
+                                      
+                                      
