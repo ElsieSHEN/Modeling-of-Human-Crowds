@@ -1,8 +1,8 @@
-#import turtle
+import turtle
 import numpy as np
 import math
 from matplotlib import pyplot as plt
-#import draw_grid as dg
+import draw_grid as dg
 
 class Cellular():
     def __init__(self, n, method, pedestrian=[]):
@@ -14,22 +14,22 @@ class Cellular():
         self.dis_dijkstra = np.zeros((self.n, self.n))
         self.List_Images = []
     
-    #def set_grid(self, n):        
-        #dg.init_grid(self.n)
+    def set_grid(self, n):        
+        dg.init_grid(self.n)
 
     def set_pedestrian(self, x, y):
         self.grid[x-1][y-1] = 1
         self.pedestrian.append(tuple((x, y)))
-        #dg.color_p(self.n, x, y)
+        dg.color_p(self.n, x, y)
 
     def set_target(self, x, y):
         self.grid[x-1][y-1] = 3
-        #dg.color_t(self.n, x, y)
+        dg.color_t(self.n, x, y)
         self.target = (x, y)
 
     def set_obstacle(self, x, y):
         self.grid[x-1][y-1] = 2
-        #dg.color_o(self.n, x, y)
+        dg.color_o(self.n, x, y)
         self.obstacle = (x, y)
 
     def set_dis_matrix(self, ped, rmax):
@@ -51,10 +51,21 @@ class Cellular():
                         if r < rmax:
                             dis += math.exp(1/(r**2 - rmax**2))
                     self.dis_matrix[i][j] = dis
+                    
                                         
         # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
+        
     def find_next_dijk(self, ped, target, neighbors, rmax):
-        self.set_dijkstra_field(target)
+        if self.method == 'avoidance':
+            for i in range(self.n):
+                for j in range(self.n):
+                    for k in self.pedestrian:
+                        r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)#/math.sqrt((self.n**2)*2)
+                        if r < rmax:
+                            dis = math.exp(1/(r**2 - rmax**2))
+                            self.dis_dijkstra[i][j] += dis    
+                            
+                
         tmp = [ped]
         tmp.extend(neighbors)
         distances = []
@@ -89,6 +100,7 @@ class Cellular():
         for i in neighbors:
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
+        self.set_dijkstra_field(self.target)    
         idx = self.find_next_dijk(ped, self.target, neighbors, rmax)
 
         if idx == -1:
@@ -98,9 +110,9 @@ class Cellular():
             return
         self.pedestrian[idx_current] = next_cell
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
-        #dg.color_p(self.n, next_cell[0], next_cell[1])
+        dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
-        #dg.color_e(self.n, ped[0], ped[1])
+        dg.color_e(self.n, ped[0], ped[1])
         
     def find_neighbors(self, x, y):
         neighbors = []
@@ -164,7 +176,7 @@ class Cellular():
                     came_from[neighbor] = curr
         
         self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
-        print(self.dis_dijkstra)
+        
         return came_from, cost_so_far, self.dis_dijkstra
               
                                       

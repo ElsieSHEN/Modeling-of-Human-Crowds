@@ -1,8 +1,8 @@
-#import turtle
+import turtle
 from matplotlib import pyplot as plt
 import numpy as np
 import math
-#import draw_grid as dg
+import draw_grid as dg
 from utils import *
 
 # 0: empty cell
@@ -11,12 +11,12 @@ from utils import *
 # 3: target
 
 n = 88
-task4_1 = Cellular(n, method='euclidean')
+task4_1 = Cellular(n, method='avoidance')
 ListofImages = []
 #ListofImages.append(task4_1.grid)
 
 
-#dg.init_grid(n)
+dg.init_grid(n)
 
 
 # set horizontal walls
@@ -59,3 +59,4 @@ for i in ListofImages:
     plt.imshow(i)
     plt.show()        
 
+turtle.done()
