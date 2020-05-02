@@ -84,6 +84,7 @@ class Cellular():
         dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
         dg.color_e(self.n, ped[0], ped[1])
+        self.get_there(next_cell)
 
     def find_neighbors(self, x, y):
         neighbors = []
@@ -96,28 +97,42 @@ class Cellular():
                 neighbors.append(i)
         return neighbors
 
+    def get_there(self, next_cell):
+        neighbors = self.find_neighbors(next_cell[0], next_cell[1])
+        for i in neighbors:
+            if self.grid[i[0]-1][i[1]-1] == 3:
+                dg.color_e(self.n, next_cell[0], next_cell[1])
+                self.grid[next_cell[0]-1][next_cell[1]-1] = 0
+                self.pedestrian.remove(next_cell)
+                return
+
+
     def not_dijkstra(self, tar, ped, step):
+        self.set_dis_matrix(ped, rmax=0)
         neighbors = self.find_neighbors(tar[0], tar[1])
         cost = 0
         path = []
         visited = [tar]
-        
+
         for s in range(step):
             cur_node = -1        
             cur_min = 9999
             for neighbor in neighbors:
+                if self.grid[neighbor[0]-1][neighbor[1]-1] == 2:
+                    visited.append(neighbor)
                 if neighbor not in visited:
                     cur_dis = self.dis_matrix[neighbor[0]-1][neighbor[1]-1]
+                    print(cur_dis)
                     visited.append(neighbor)
                     if cur_dis < cur_min:
                         cur_min = cur_dis
                         cur_node = neighbor
-                        neighbors = self.find_neighbors(cur_node[0], cur_node[1])
-                    
+            if cur_node == -1: break                   
             path.append(cur_node)
             cost += cur_min     
                 
-            if cur_node == -1 or cur_node == ped: break
+            if cur_node == ped: break
+            neighbors = self.find_neighbors(cur_node[0], cur_node[1])
 
         print(path)
         return path
