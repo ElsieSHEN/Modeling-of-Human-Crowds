@@ -15,9 +15,7 @@ task4_1 = Cellular(n, method='avoidance')
 ListofImages = []
 #ListofImages.append(task4_1.grid)
 
-
 dg.init_grid(n)
-
 
 # set horizontal walls
 for i in range(1,88):
@@ -34,29 +32,25 @@ i_v = [35,53,88]
 for j in range(26,62):
     for i in i_v:
         if (j > 41 and j < 47 ):
-            continue
-        
+            continue        
         task4_1.set_obstacle(i,j)
          
-
 # set pedestrians
 for i in range(1,17,2):
     for j in range(27,62,2):
         task4_1.set_pedestrian(i,j)
                
-
 task4_1.set_target(88, 44)
-
 
 for i in range(5):
     ListofImages.append(task4_1.grid)
     for p in task4_1.pedestrian:
             task4_1.next_step(p, n, rmax=2)
-         
+
+turtle.done()         
 #plot images
 for i in ListofImages:
     i = i.transpose()
     plt.imshow(i)
     plt.show()        
 
-turtle.done()

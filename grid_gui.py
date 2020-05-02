@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Apr 23 15:07:04 2020
-
-@author: ubuntujan
-"""
-
 from tkinter import *
 import numpy as np
 import math
@@ -13,7 +5,6 @@ from dataclasses import dataclass
 from collections import namedtuple
 from matplotlib import pyplot as plt
 import matplotlib.animation as animation
-
    
 PedestrianList = []    
 master = Tk();
@@ -30,13 +21,11 @@ Width = 50                       #pixelwidth for GUI
 t_coord = [int] * 2               #initialize target coordiantes as mutable object
 #Pedestrian = namedtuple("Pedestrian", "py px mat_cost")
 
-
 @dataclass
 class Pedestrian:
     py: int
     px: int
     mat_cost: np.ndarray
-
     
 board = Canvas(master, width=x*Width, height =y*Width)
 board.pack(side=LEFT)
@@ -81,10 +70,9 @@ def set_inital_conditions(event):
 board.bind('<Button-1>', set_inital_conditions)
 master.mainloop()
 
-"""
-Takes in coordinates and the size of the complete grid (with boundaries) and 
-calculates the distance for each grid cell in the inner grid
-"""
+#Takes in coordinates and the size of the complete grid (with boundaries) and 
+#calculates the distance for each grid cell in the inner grid
+
 def distance_field(target_coord, n, mat_dist, max_dist):
     for x in range(1,n+1):
         for y in range(1,n+1):
@@ -97,6 +85,7 @@ for P in PedestrianList:
     P.mat_cost = mat_dist + mat_obst 
      
 ListIterationVisualization = [mat_state]
+
 def loop_neighbours(Ped):
     temp_u = 1
     py = Ped.py
@@ -129,15 +118,6 @@ for img in range(len(ListIterationVisualization)):
     plt.pause(2)
     plt.show()
     
-"""    
-
-    
-"""
-def showvisualizationslider(step):
-    plt.figure()
-    plt.imshow(ListIterationVisualization[step])
-       
-interact(showvisualizationslider, step=widgets.IntSlider(min=0, max=4, step=1, values=0))    
     
 def utility_function(t_x, t_y, x,y, state):
     u = 0

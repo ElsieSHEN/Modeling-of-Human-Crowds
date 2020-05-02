@@ -51,10 +51,7 @@ class Cellular():
                         if r < rmax:
                             dis += math.exp(1/(r**2 - rmax**2))
                     self.dis_matrix[i][j] = dis
-                    
-                                        
-        # self.dis_matrix = self.dis_matrix / sum(self.dis_matrix)
-        
+                                               
     def find_next_dijk(self, ped, target, neighbors, rmax):
         if self.method == 'avoidance':
             for i in range(self.n):
@@ -64,8 +61,7 @@ class Cellular():
                         if r < rmax:
                             dis = math.exp(1/(r**2 - rmax**2))
                             self.dis_dijkstra[i][j] += dis    
-                            
-                
+                                       
         tmp = [ped]
         tmp.extend(neighbors)
         distances = []
@@ -157,13 +153,13 @@ class Cellular():
         came_from[tar] = None
         cost_so_far = {}
         cost_so_far[tar] = 0
-        #initialize cost array. set obstacles to nan
-        #cost_arr = np.zeros((self.n,self.n))
+
+        #dont include obstacles
         for i in range(self.n):
             for j in range(self.n):
                 if self.grid[i][j] == 2:
                     self.dis_dijkstra[i][j] = np.nan
-                    
+        #dijkstra for grids            
         while frontier:
             curr = frontier.pop(0)         
             neighbors = self.find_neighbors(curr[0], curr[1])
@@ -176,7 +172,6 @@ class Cellular():
                     came_from[neighbor] = curr
         
         self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
-        
         return came_from, cost_so_far, self.dis_dijkstra
               
                                       
