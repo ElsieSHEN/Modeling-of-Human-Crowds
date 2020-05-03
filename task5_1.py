@@ -14,31 +14,39 @@ from utils import *
 # dijk: 1-Dijkstra algorithm / 0-Distances matrix
 
 
-task3 = Cellular(50, method='avoidance', pedestrian=[])
 
-#dg.init_grid(50)
-task3.set_pedestrian(10, 25)
-task3.set_pedestrian(25, 10)
-task3.set_pedestrian(40, 25)
-task3.set_pedestrian(40, 40) # for this pedestrian, step size is sqrt(2)
-task3.set_pedestrian(25, 40)
+n = 100
 
-task3.set_target(25, 25)
+#turtle.setup(800,1200)
+task5_1 = Cellular(n, method='euclidean', pedestrian=[], dijk=1)
 
-#for i in range(10):
-#    for p in task3.pedestrian:
-#        task3.next_step(p, 50, rmax=4)
+#task5_1.set_grid(1)
+task5_1.set_pedestrian(1, 50)
+task5_1.set_target(100, 50)
+
+for i in range(1,101):
+    task5_1.set_obstacle(i, 40)
+    task5_1.set_obstacle(i, 60)
+
+   
+#for i in range(100):
+#    for p in task5_1.pedestrian:
+#        task5_1.next_step(p, n)
 #turtle.done()
+        
 
 %matplotlib notebook
-task3.set_board()
-my_board = np.transpose(task3.grid)
+
+
+task5_1.set_board()
+
+my_board = np.transpose(task5_1.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
 plt.show()
 
 def animate(frame):
-    im.set_data(task3.update_board(rmax=4))
+    im.set_data(task5_1.update_board())
     return im,
 
 anim = animation.FuncAnimation(fig, animate, frames=200, 
