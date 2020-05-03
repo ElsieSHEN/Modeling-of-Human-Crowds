@@ -15,5 +15,5 @@ for i in range(48, 38, -1):
 test3.set_target(50, 1)
 for i in range(100):
     for p in test3.pedestrian:
-        test3.next_step(p, 50, rmax=1)
+        test3.next_step(p, 50, rmax=0)
 turtle.done()
