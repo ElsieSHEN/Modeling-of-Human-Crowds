@@ -42,7 +42,7 @@ task0.set_obstacle(13,15)
 
 for i in range(50):
     for p in task0.pedestrian:
-        task0.next_step(p, n, rmax=2)
+            task0.next_step(p, n, rmax=2)
 
 turtle.done()
 #came_from, cost_so_far = task0.maybe_dijkstra(task0.target, task0.pedestrian)

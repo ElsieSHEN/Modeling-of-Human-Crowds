@@ -96,6 +96,7 @@ class Cellular():
         for i in neighbors:
             if self.grid[i[0]-1][i[1]-1] == 3:
                 return
+        # initialize dijkstra field. If method is avoidance it will recalculate cost field    
         self.set_dijkstra_field(self.target)    
         idx = self.find_next_dijk(ped, self.target, neighbors, rmax)
 
