@@ -14,14 +14,29 @@ from utils import *
 # dijk: 1-Dijkstra algorithm / 0-Distances matrix
 
 
-test3 = Cellular(50, method='euclidean', pedestrian=[], remove=1, dijk=1)
+test3 = Cellular(50, method='avoidance', pedestrian=[], remove=1, dijk=1)
 
 #dg.init_grid(50)
-for i in range(48, 38, -1):
+for i in range(44, 24, -2):
     test3.set_pedestrian(i, 49)
-    test3.set_pedestrian(i, 50)
+    test3.set_pedestrian(i-1, 50)
     test3.set_obstacle(i, 48)
+    test3.set_obstacle(i-1, 48)
     test3.set_obstacle(48, i)
+    test3.set_obstacle(48, i-1)
+
+for i in range(4):
+    test3.set_obstacle(44+i, 48)
+    test3.set_obstacle(48, 44+i)
+    
+test3.set_obstacle(48, 48)
+test3.set_obstacle(24, 48)
+test3.set_obstacle(23, 48)
+
+test3.set_obstacle(48, 24)
+test3.set_obstacle(48, 23)
+
+
 test3.set_target(50, 1)
 
 #for i in range(100):
@@ -29,23 +44,23 @@ test3.set_target(50, 1)
 #        test3.next_step(p, 50, rmax=1)
 #turtle.done()
 
-
-
-%matplotlib notebook
+# %matplotlib notebook
 
 test3.set_board()
 
 my_board = np.transpose(test3.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-plt.show()
+
 
 # Helper function that updates the board and returns a new image of
 # the updated board animate is the function that FuncAnimation calls
 def animate(frame):
-    im.set_data(test3.update_board())
+    im.set_data(test3.update_board(rmax=2))
     return im,
 
 # This line creates the animation
 anim = animation.FuncAnimation(fig, animate, frames=200, 
                                interval=50)
+
+plt.show()
