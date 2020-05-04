@@ -23,9 +23,9 @@ class Cellular():
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
 
-    def set_pedestrian(self, x, y):
+    def set_pedestrian(self, x, y, age=20):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y)))
+        self.pedestrian.append(tuple((x, y, age)))
         #dg.color_p(self.n, x, y)
 
     #def set_target(self, x, y):

@@ -21,7 +21,7 @@ n = 100
 task5_1 = Cellular(n, method='euclidean', pedestrian=[], dijk=1)
 
 #task5_1.set_grid(1)
-task5_1.set_pedestrian(1, 50)
+task5_1.set_pedestrian(1, 50, age = 20)
 task5_1.set_target(100, 50)
 
 for i in range(1,101):
