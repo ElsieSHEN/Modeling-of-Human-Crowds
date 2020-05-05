@@ -19,8 +19,8 @@ n = 20
 task0 = Cellular(n, method='euclidean', pedestrian=[], dijk=1)
 #dg.init_grid(n)
 
-task0.set_pedestrian(2,10)
-task0.set_pedestrian(2,2)
+task0.set_pedestrian(2,10,20)
+task0.set_pedestrian(2,2,20)
                
 task0.set_target(19,10)
 task0.set_obstacle(10,5)

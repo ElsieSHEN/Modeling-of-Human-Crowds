@@ -19,6 +19,7 @@ class Cellular():
         self.dis_dijkstra = np.zeros((self.n, self.n))
         self.remove = remove
         self.dijk = dijk
+        self.total_iterations = 0
         self.age_walk = np.array([[20,1],
                                  [30,0.969],
                                  [40,0.938],
@@ -31,9 +32,9 @@ class Cellular():
         #dg.init_grid(self.n)
         
 
-    def set_pedestrian(self, x, y, age):
+    def set_pedestrian(self, x, y, age=20, count=0):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y, age)))
+        self.pedestrian.append(tuple((x, y, age, count)))
         #dg.color_p(self.n, x, y)
 
     #def set_target(self, x, y):
@@ -150,9 +151,9 @@ class Cellular():
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
             return 
         #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
-        temp_tuple = next_cell + (ped[2],)
+        temp_tuple = next_cell + (ped[2], ped[3]+1)
         self.pedestrian[idx_current] = temp_tuple
-        print("pedestrian ", self.pedestrian)
+        #print("pedestrian ", self.pedestrian)
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
         #dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
@@ -267,7 +268,7 @@ class Cellular():
                         frontier.append(neighbor)
                         came_from[neighbor] = curr
             
-            print(came_from)
+            came_from.clear()
             cost_so_far.clear()
 
         for i in range(self.n):
@@ -285,13 +286,14 @@ class Cellular():
         else:
             self.set_dis_matrix(rmax=0)
             
+    # returns the corresponding willingness to walk (given an certain age)       
     def get_prob_thresh(self, age):
         for i in range(self.age_walk.shape[0]):
             if age == self.age_walk[i][0]:
                 res = self.age_walk[i][1]
         return res
 
-
+    # determines if pedestrian moves in the current iteration
     def is_moving(self, ped):
         age = ped[2]
         #random number with 3 decimal places
@@ -309,12 +311,14 @@ class Cellular():
     def update_board(self, rmax=0):
         for p in self.pedestrian:
             flag_move = self.is_moving(p)
-            print(flag_move)
+            self.total_iterations += 1
+            print(self.total_iterations)
             if flag_move == 1:
                 self.next_step(p, self.n, rmax=rmax)
             else:
                 my_board = np.transpose(self.grid)
                 continue         
+        print(self.pedestrian)
         my_board = np.transpose(self.grid)
         return my_board
     

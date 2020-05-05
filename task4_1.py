@@ -42,11 +42,11 @@ for j in range(26,62):
 # set pedestrians
 for i in range(1,17,2):
     for j in range(27,62,2):
-        task4_1.set_pedestrian(i,j)
+        task4_1.set_pedestrian(i,j,60)
                
 task4_1.set_target(88, 44)
 
-%matplotlib notebook
+#%matplotlib notebook
 
 task4_1.set_board()
 my_board = np.transpose(task4_1.grid)
