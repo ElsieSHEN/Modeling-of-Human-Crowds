@@ -3,6 +3,9 @@ import numpy as np
 import math
 import draw_grid as dg
 from utils import *
+from IPython import display
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 # 0: empty cell
 # 1: pedestrian
@@ -30,7 +33,7 @@ task2.set_target(25, 25)
 # execute the cell again (there is an error with the animation package that I cannot seem to get rid of)
 
 # Required line for plotting the animation
-%matplotlib notebook
+# %matplotlib notebook
 
 #draw distance matrix
 task2.set_board()
@@ -47,6 +50,7 @@ plt.show()
 
 # Helper function that updates the board and returns a new image of
 # the updated board animate is the function that FuncAnimation calls
+
 def animate(frame): #frame is an int from 0 to frames-1, and keep looping
     im.set_data(task2.update_board())
     return im,
