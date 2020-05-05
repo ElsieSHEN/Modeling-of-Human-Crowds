@@ -16,16 +16,15 @@ class Cellular():
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
         self.dis_dijkstra = np.zeros((self.n, self.n))
-        self.List_Images = []
         self.remove = remove
         self.dijk = dijk
     
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
 
-    def set_pedestrian(self, x, y, age=20):
+    def set_pedestrian(self, x, y):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y, age)))
+        self.pedestrian.append(tuple((x, y)))
         #dg.color_p(self.n, x, y)
 
     #def set_target(self, x, y):
@@ -276,6 +275,7 @@ class Cellular():
     
     def update_board(self, rmax=0):
         for p in self.pedestrian:
+            #print("age of ", p, "=", p[2])
             self.next_step(p, self.n, rmax=rmax)
         my_board = np.transpose(self.grid)
         return my_board

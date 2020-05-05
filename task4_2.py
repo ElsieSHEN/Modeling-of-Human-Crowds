@@ -45,7 +45,7 @@ task0.set_obstacle(10,15)
 task0.set_obstacle(13,15)
 
 
-%matplotlib notebook
+#%matplotlib notebook
 
 task0.set_board()
 my_board = np.transpose(task0.grid)
