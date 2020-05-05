@@ -28,14 +28,9 @@ for i in range(44, 24, -2):
 for i in range(4):
     test3.set_obstacle(44+i, 48)
     test3.set_obstacle(48, 44+i)
-    
+    test3.set_obstacle(24-i, 48)
+    test3.set_obstacle(48, 24-i)
 test3.set_obstacle(48, 48)
-test3.set_obstacle(24, 48)
-test3.set_obstacle(23, 48)
-
-test3.set_obstacle(48, 24)
-test3.set_obstacle(48, 23)
-
 
 test3.set_target(50, 1)
 
@@ -59,7 +54,7 @@ def animate(frame):
     im.set_data(test3.update_board(rmax=2))
     return im,
 
-# This line creates the animation
+# # This line creates the animation
 anim = animation.FuncAnimation(fig, animate, frames=200, 
                                interval=50)
 
