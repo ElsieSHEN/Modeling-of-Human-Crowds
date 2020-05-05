@@ -4,6 +4,7 @@ import math
 import draw_grid as dg
 
 from utils import *
+from random import *
 
 # 0: empty cell
 # 1: pedestrian
@@ -15,47 +16,43 @@ from utils import *
 # dijk: 1-Dijkstra algorithm / 0-Distances matrix
 
 
-n = 70
+n = 140
 
-task5_2 = Cellular(n, method='euclidean', pedestrian=[], remove=1, dijk=1)
+task5_2 = Cellular(n, method='euclidean', pedestrian=[], target=[], remove=1, dijk=1)
 
 #dg.init_grid(n)
 
-for i in range(1, 71):
-    for j in range(32, 39):
-        if i % 2 != 0:
-            if j % 2 != 0:
-                if (i, j) != (11, 35) and (i, j) != (61, 35) and (i, j) != (61, 37):
-                    task5_2.set_pedestrian(i, j)
-        else:
-            if j % 2 == 0:
-                if (i, j) != (10, 36) and (i, j) != (60, 34) and (i, j) != (60, 36):
-                    task5_2.set_pedestrian(i, j)
 
-for i in range(32, 39):
-    task5_2.set_target(70, i)
-#task5_2.set_target(70, 35)
-for i in range(1, 71):
-    task5_2.set_obstacle(i, 32)
-    task5_2.set_obstacle(i, 39)
 
-# control measuring points
-task5_2.set_obstacle(10, 35)
-task5_2.set_obstacle(11, 35)
-task5_2.set_obstacle(10, 36)
-task5_2.set_obstacle(11, 36)
+for i in range(64, 76):
+    task5_2.set_target(140, i)
+for i in range(1, 141):
+    task5_2.set_obstacle(i, 63)
+    task5_2.set_obstacle(i, 76)
 
-# main measuring points
-task5_2.set_obstacle(60, 34)
-task5_2.set_obstacle(61, 34)
-task5_2.set_obstacle(60, 35)
-task5_2.set_obstacle(61, 35)
+# measuring points
+for i in range(8, 13):
+    for j in range(68, 73):
+        task5_2.set_obstacle(i, j)
 
-# control measuring points
-task5_2.set_obstacle(60, 36)
-task5_2.set_obstacle(61, 36)
-task5_2.set_obstacle(60, 37)
-task5_2.set_obstacle(61, 37)
+for i in range(133, 138):
+    for j in range(65, 75):
+        task5_2.set_obstacle(i, j)
+
+empty_cell = []
+
+for i in range(0, 140):
+    for j in range(63, 75):
+        if task5_2.grid[i][j] == 0:
+            empty_cell.append((i+1, j+1))
+    
+
+n = 134 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
+random_p = sample(empty_cell, n)
+
+for p in random_p:
+    task5_2.set_pedestrian(p[0], p[1])
+
 
     
 #for i in range(100):
@@ -71,18 +68,24 @@ task5_2.set_board()
 my_board = np.transpose(task5_2.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-plt.savefig(fname='task5_2', dpi=150)
+#plt.savefig(fname='task5_2', dpi=150)
 
 switch = 0
 # Helper function that updates the board and returns a new image of
 # the updated board animate is the function that FuncAnimation calls
 def animate(frame):
     im.set_data(task5_2.update_board())
-    for i in range(32, 40, 2):
-        task5_2.set_pedestrian(1, i)
+    n = 134 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
+    if len(task5_2.pedestrian) < n:
+        h = min(n - len(task5_2.pedestrian), 12)
+        width = [64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75]
+        y = sample(width, h)
+        for j in y:
+            if task5_2.grid[0][j-1]==0:
+                task5_2.set_pedestrian(1, j)            
     return im,
 
 # This line creates the animation
 anim = animation.FuncAnimation(fig, animate, frames=30, 
-                               interval=1000)
+                               interval=300)
 plt.show()
