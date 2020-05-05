@@ -8,10 +8,11 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 
 class Cellular():
-    def __init__(self, n, method, pedestrian=[], remove=0, dijk=0):
+    def __init__(self, n, method, pedestrian=[], target=[], remove=0, dijk=0):
         self.n = n
         self.method = method
         self.pedestrian = pedestrian
+        self.target = target
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
         self.dis_dijkstra = np.zeros((self.n, self.n))
@@ -22,17 +23,21 @@ class Cellular():
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
 
-    def set_pedestrian(self, x, y):
+    def set_pedestrian(self, x, y, age=20):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y)))
+        self.pedestrian.append(tuple((x, y, age)))
         #dg.color_p(self.n, x, y)
 
-    def set_target(self, x, y):
-        self.grid[x-1][y-1] = 3
-        self.target = (x, y)
+    #def set_target(self, x, y):
+    #    self.grid[x-1][y-1] = 3
+    #    self.target = (x, y)
         #self.target.append(tuple((x, y)))
         #dg.color_t(self.n, x, y)
-
+    
+    def set_target(self, x, y):#multiple target
+        self.grid[x-1][y-1] = 3
+        self.target.append(tuple((x, y)))
+        #dg.color_t(self.n, x, y)
 
     def set_obstacle(self, x, y):
         self.grid[x-1][y-1] = 2
@@ -41,34 +46,35 @@ class Cellular():
             
     
     def set_dis_matrix(self, rmax):
-        a = self.target[0] - 1
-        b = self.target[1] - 1
-        
-        for i in range(self.n):
-            for j in range(self.n):
-                dis = math.sqrt(((a-1)-i)**2 + ((b-1)-j)**2)/math.sqrt((self.n**2)*2)
-                if self.grid[i][j] == 2:
-                    dis += 999
+        for t in self.target:
+            a = t[0] - 1
+            b = t[1] - 1
+
+            for i in range(self.n):
+                for j in range(self.n):
+                    dis = math.sqrt(((a-1)-i)**2 + ((b-1)-j)**2)/math.sqrt((self.n**2)*2)
+                    if self.grid[i][j] == 2:
+                        dis += 999
+
+                    if self.method == 'euclidean':
+                        self.dis_matrix[i][j] = dis
+
+                    elif self.method == 'avoidance':                          
+                        for k in self.pedestrian:
+                            r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)                    
+                            if r < rmax:
+                                dis += math.exp(1/(r**2 - rmax**2))
+                        self.dis_matrix[i][j] = dis
+
+
                     
-                if self.method == 'euclidean':
-                    self.dis_matrix[i][j] = dis
-
-                elif self.method == 'avoidance':                          
-                    for k in self.pedestrian:
-                        r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)                    
-                        if r < rmax:
-                            dis += math.exp(1/(r**2 - rmax**2))
-                    self.dis_matrix[i][j] = dis
-
-
-                    
-    def find_next_dijk(self, ped, target, neighbors, rmax):
+    def find_next_dijk(self, ped, neighbors, rmax):
         if self.method == 'avoidance':
-            self.set_dijkstra_field(target)
+            self.set_mtar_dijkstra_field()
             for i in range(self.n):
                 for j in range(self.n):
                     for k in self.pedestrian:
-                        r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)#/math.sqrt((self.n**2)*2)
+                        r = math.sqrt((i-k[0]+1)**2 + (j-k[1]+1)**2)
                         if r < rmax:
                             dis = math.exp(1/(r**2 - rmax**2))
                             self.dis_dijkstra[i][j] += dis    
@@ -104,22 +110,6 @@ class Cellular():
         else:
             return idx-1
     
-    def find_next_excl(self, ped, target, neighbors, rmax):#not used
-        if self.method == 'avoidance':
-            self.set_dis_matrix(rmax)
-        tmp = []
-        tmp.extend(neighbors)
-        distances = []
-        
-        if not tmp:
-            return -1
-        
-        for i in tmp:
-            distances.append(self.dis_matrix[i[0]-1][i[1]-1])     
-        
-        idx = distances.index(min(distances))
-        
-        return idx
 
     def next_step(self, ped, n, rmax=0):
         idx_current = self.pedestrian.index(ped)
@@ -140,13 +130,10 @@ class Cellular():
         #self.set_dijkstra_field(self.target)
         
         if self.dijk == 1:
-            idx = self.find_next_dijk(ped, self.target, neighbors, rmax)
+            idx = self.find_next_dijk(ped, neighbors, rmax)
         else:
             idx = self.find_next(ped, self.target, neighbors, rmax)
-        
-        #idx = self.find_next_excl(ped, self.target, neighbors, rmax)
-
-        
+           
         if idx == -1:
             return
         next_cell = neighbors[idx]           
@@ -180,7 +167,7 @@ class Cellular():
                 self.pedestrian.remove(next_cell)
                 return
           
-    def not_dijkstra(self, tar, ped, step):
+    def not_dijkstra(self, tar, ped, step):#not used
         self.set_dis_matrix(ped, rmax=0)
         neighbors = self.find_neighbors(tar[0], tar[1])
         cost = 0
@@ -210,7 +197,8 @@ class Cellular():
         print(path)
         return path
     
-    def set_dijkstra_field(self, tar):
+    def set_dijkstra_field(self):#not used
+        tar = self.target
         frontier = [tar]
         came_from = {}
         came_from[tar] = None
@@ -236,10 +224,53 @@ class Cellular():
         
         self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
         return came_from, cost_so_far, self.dis_dijkstra    
+    
+    def set_mtar_dijkstra_field(self):#multiple target
+        self.dis_dijkstra = np.zeros((self.n, self.n))
+        #dont include obstacles
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.grid[i][j] == 2:
+                    self.dis_dijkstra[i][j] = np.nan
+               
+        for tar in self.target:
+            frontier = [tar]            
+            came_from = {}
+            came_from[tar] = None
+            cost_so_far = {}
+            cost_so_far[tar] = 0
 
+            #dijkstra for grids            
+            while frontier:
+                curr = frontier.pop(0)         
+                neighbors = self.find_neighbors(curr[0], curr[1])
+                for neighbor in neighbors:
+                    new_cost = cost_so_far[curr] + 1
+                    if neighbor not in cost_so_far and (np.isnan(self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1])==0):
+                        a = self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1]
+                        if a == 0 or a > new_cost:
+                            cost_so_far[neighbor] = new_cost
+                            self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1] = new_cost
+                        else:
+                            cost_so_far[neighbor] = a
+                        frontier.append(neighbor)
+                        came_from[neighbor] = curr
+            
+            came_from.clear()
+            cost_so_far.clear()
+
+        for i in range(self.n):
+            for j in range(self.n):
+                if self.grid[i][j] == 3:
+                    self.dis_dijkstra[i][j] = 0
+        
+        self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
+        return self.dis_dijkstra
+    
+    
     def set_board(self):
         if self.dijk == 1:
-            self.set_dijkstra_field(self.target)
+            self.set_mtar_dijkstra_field()
         else:
             self.set_dis_matrix(rmax=0)
     

@@ -21,12 +21,12 @@ n = 100
 task5_1 = Cellular(n, method='euclidean', pedestrian=[], dijk=1)
 
 #task5_1.set_grid(1)
-task5_1.set_pedestrian(1, 50)
+task5_1.set_pedestrian(1, 50, age = 20)
 task5_1.set_target(100, 50)
 
 for i in range(1,101):
-    task5_1.set_obstacle(i, 40)
-    task5_1.set_obstacle(i, 60)
+    task5_1.set_obstacle(i, 47)
+    task5_1.set_obstacle(i, 53)
 
    
 #for i in range(100):
@@ -35,7 +35,7 @@ for i in range(1,101):
 #turtle.done()
         
 
-%matplotlib notebook
+#%matplotlib notebook
 
 
 task5_1.set_board()
@@ -49,5 +49,5 @@ def animate(frame):
     im.set_data(task5_1.update_board())
     return im,
 
-anim = animation.FuncAnimation(fig, animate, frames=200, 
-                               interval=50)
+anim = animation.FuncAnimation(fig, animate, frames=500, 
+                               interval=333)
