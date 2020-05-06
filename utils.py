@@ -19,6 +19,7 @@ class Cellular():
         self.dis_dijkstra = np.zeros((self.n, self.n))
         self.remove = remove
         self.dijk = dijk
+        self.stat = []
         self.total_iterations = 0
         self.age_walk = np.array([[20,1],
                                  [30,0.969],
@@ -32,9 +33,9 @@ class Cellular():
         #dg.init_grid(self.n)
         
 
-    def set_pedestrian(self, x, y, age=20, count=0):
+    def set_pedestrian(self, x, y, age=20, count=0, iteration=0):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y, age, count)))
+        self.pedestrian.append(tuple((x, y, age, count, iteration)))
         #dg.color_p(self.n, x, y)
 
     #def set_target(self, x, y):
@@ -128,6 +129,7 @@ class Cellular():
                 #dg.color_e(self.n, ped[0], ped[1])
                 if self.remove == 1:
                     self.grid[ped[0]-1][ped[1]-1] = 0
+                    self.stat.append((ped[2], ped[3], ped[4]))
                     self.pedestrian.remove(ped)
                     return
                 return
@@ -151,7 +153,7 @@ class Cellular():
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
             return 
         #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
-        temp_tuple = next_cell + (ped[2], ped[3]+1)
+        temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
         self.pedestrian[idx_current] = temp_tuple
         #print("pedestrian ", self.pedestrian)
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
@@ -310,15 +312,14 @@ class Cellular():
     
     def update_board(self, rmax=0):
         for p in self.pedestrian:
-            flag_move = self.is_moving(p)
-            self.total_iterations += 1
-            print(self.total_iterations)
+            flag_move = self.is_moving(p)            
+            idx_current = self.pedestrian.index(p)          
             if flag_move == 1:
                 self.next_step(p, self.n, rmax=rmax)
-            else:
-                my_board = np.transpose(self.grid)
-                continue         
-        print(self.pedestrian)
+            a = self.pedestrian[idx_current] 
+            temp_tuple = (a[0], a[1], a[2], a[3], a[4]+1)
+            self.pedestrian[idx_current] = temp_tuple
+        self.total_iterations += 1
         my_board = np.transpose(self.grid)
         return my_board
     
