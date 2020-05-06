@@ -6,6 +6,7 @@ import time
 from IPython import display
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import random
 
 class Cellular():
     def __init__(self, n, method, pedestrian=[], target=[], remove=0, dijk=0):
@@ -16,16 +17,25 @@ class Cellular():
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
         self.dis_dijkstra = np.zeros((self.n, self.n))
-        self.List_Images = []
         self.remove = remove
         self.dijk = dijk
+        self.stat = []
+        self.total_iterations = 0
+        self.age_walk = np.array([[20,1],
+                                 [30,0.969],
+                                 [40,0.938],
+                                 [50,0.906],
+                                 [60,0.813],
+                                 [70,0.688],
+                                 [80,0.438]])
     
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
+        
 
-    def set_pedestrian(self, x, y, age=20):
+    def set_pedestrian(self, x, y, age=20, count=0, iteration=0):
         self.grid[x-1][y-1] = 1
-        self.pedestrian.append(tuple((x, y, age)))
+        self.pedestrian.append(tuple((x, y, age, count, iteration)))
         #dg.color_p(self.n, x, y)
 
     #def set_target(self, x, y):
@@ -119,6 +129,7 @@ class Cellular():
                 #dg.color_e(self.n, ped[0], ped[1])
                 if self.remove == 1:
                     self.grid[ped[0]-1][ped[1]-1] = 0
+                    self.stat.append((ped[2], ped[3], ped[4]))
                     self.pedestrian.remove(ped)
                     return
                 return
@@ -140,8 +151,11 @@ class Cellular():
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 2:
             return
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
-            return        
-        self.pedestrian[idx_current] = next_cell
+            return 
+        #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
+        temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
+        self.pedestrian[idx_current] = temp_tuple
+        #print("pedestrian ", self.pedestrian)
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
         #dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
@@ -273,16 +287,42 @@ class Cellular():
             self.set_mtar_dijkstra_field()
         else:
             self.set_dis_matrix(rmax=0)
+            
+    # returns the corresponding willingness to walk (given an certain age)       
+    def get_prob_thresh(self, age):
+        for i in range(self.age_walk.shape[0]):
+            if age == self.age_walk[i][0]:
+                res = self.age_walk[i][1]
+        return res
+
+    # determines if pedestrian moves in the current iteration
+    def is_moving(self, ped):
+        age = ped[2]
+        #random number with 3 decimal places
+        r = random.randint(0,1000) / 1000
+        prob_threshold = self.get_prob_thresh(age)
+        
+        if r < prob_threshold:
+            flag_move = 1
+            return flag_move
+        else:
+            flag_move = 0
+            return flag_move
+            
     
     def update_board(self, rmax=0):
         for p in self.pedestrian:
-            self.next_step(p, self.n, rmax=rmax)
+            flag_move = self.is_moving(p)            
+            idx_current = self.pedestrian.index(p)          
+            if flag_move == 1:
+                self.next_step(p, self.n, rmax=rmax)
+            a = self.pedestrian[idx_current] 
+            temp_tuple = (a[0], a[1], a[2], a[3], a[4]+1)
+            self.pedestrian[idx_current] = temp_tuple
+        self.total_iterations += 1
         my_board = np.transpose(self.grid)
         return my_board
     
-
-    
-
 
         
 
