@@ -9,7 +9,7 @@ import matplotlib.animation as animation
 import random
 
 class Cellular():
-    def __init__(self, n, method, pedestrian=[], target=[], remove=0, dijk=0):
+    def __init__(self, n, method, pedestrian=[], target=[], remove=0, dijk=0, trans=0):
         self.n = n
         self.method = method
         self.pedestrian = pedestrian
@@ -19,6 +19,7 @@ class Cellular():
         self.dis_dijkstra = np.zeros((self.n, self.n))
         self.remove = remove
         self.dijk = dijk
+        self.trans = trans
         self.stat = []
         self.total_iterations = 0
         self.age_walk = np.array([[20,1],
@@ -152,8 +153,15 @@ class Cellular():
             return
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
             return 
+        
         #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
-        temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
+        if self.trans == 1:
+            if self.total_iterations>=30:
+                temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
+            else:
+                temp_tuple = next_cell + (ped[2], ped[3], ped[4])
+        else:
+            temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
         self.pedestrian[idx_current] = temp_tuple
         #print("pedestrian ", self.pedestrian)
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
@@ -318,7 +326,11 @@ class Cellular():
                 self.next_step(p, self.n, rmax=rmax)
             a = self.pedestrian[idx_current] 
             temp_tuple = (a[0], a[1], a[2], a[3], a[4]+1)
-            self.pedestrian[idx_current] = temp_tuple
+            if self.trans == 1:
+                if self.total_iterations >= 30:
+                    self.pedestrian[idx_current] = temp_tuple
+            else:
+                self.pedestrian[idx_current] = temp_tuple
         self.total_iterations += 1
         my_board = np.transpose(self.grid)
         return my_board

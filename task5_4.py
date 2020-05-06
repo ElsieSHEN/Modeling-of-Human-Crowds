@@ -63,7 +63,6 @@ for p in task5_4.stat:
 for i in range(7):
     avg_speed.append(sum(speed[i])/n_speed[i])
 
-#print(avg_speed)
 
 
 plt.plot(age, avg_speed)
