@@ -32,7 +32,6 @@ task5_4.set_board()
 my_board = np.transpose(task5_4.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-#plt.savefig(fname='task5_4', dpi=150)
 
 
 # Helper function that updates the board and returns a new image of
@@ -47,4 +46,28 @@ anim = animation.FuncAnimation(fig, animate, frames=30,
 plt.show()
 
 
-print(task5_4.stat)
+age=[20, 30, 40, 50, 60, 70, 80]
+speed=np.zeros((7, 8))
+n_speed = np.zeros(7)
+avg_speed=[]
+
+speed[0][0] = 1
+for p in task5_4.stat:
+    dist = p[1]*0.4
+    time = p[2]*250/1000
+    for i in range(7):
+        if p[0] == 20+i*10:
+            speed[i][int(n_speed[i])] = dist/time
+            n_speed[i]+=1
+            
+for i in range(7):
+    avg_speed.append(sum(speed[i])/n_speed[i])
+
+#print(avg_speed)
+
+
+plt.plot(age, avg_speed)
+plt.ylim(0, 2.5)
+plt.xlabel('age [years]')
+plt.ylabel('horizontal walking speed [m/s]')
+plt.show()
