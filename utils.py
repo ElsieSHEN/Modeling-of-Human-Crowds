@@ -33,7 +33,6 @@ class Cellular():
     #def set_grid(self, n):        
         #dg.init_grid(self.n)
         
-
     def set_pedestrian(self, x, y, age=20, count=0, iteration=0):
         self.grid[x-1][y-1] = 1
         self.pedestrian.append(tuple((x, y, age, count, iteration)))
@@ -49,7 +48,6 @@ class Cellular():
         #dg.color_o(self.n, x, y)
         self.obstacle = (x, y)                           
             
-    
     def set_dis_matrix(self, rmax):
         for t in self.target:
             a = t[0] - 1
@@ -71,8 +69,7 @@ class Cellular():
                                 dis += math.exp(1/(r**2 - rmax**2))
                         self.dis_matrix[i][j] = dis
 
-
-                    
+                  
     def find_next_dijk(self, ped, neighbors, rmax):
         if self.method == 'avoidance':
             self.set_mtar_dijkstra_field()
@@ -95,8 +92,7 @@ class Cellular():
         if idx == 0:
             return -1
         else:
-            return idx-1
-    
+            return idx-1  
     
     def find_next(self, ped, target, neighbors, rmax):
         if self.method == 'avoidance':
@@ -115,7 +111,6 @@ class Cellular():
         else:
             return idx-1
     
-
     def next_step(self, ped, n, rmax=0):
         idx_current = self.pedestrian.index(ped)
         neighbors = self.find_neighbors(ped[0], ped[1])
@@ -129,10 +124,6 @@ class Cellular():
                     return -1
                 return -1
         
-
-        # initialize dijkstra field. If method is avoidance it will recalculate cost field([Yun]move it out)    
-        #self.set_dijkstra_field(self.target)
-        
         if self.dijk == 1:
             idx = self.find_next_dijk(ped, neighbors, rmax)
         else:
@@ -145,8 +136,7 @@ class Cellular():
             return idx_current
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
             return idx_current
-        
-       
+              
         if self.trans == 1:
             if self.total_iterations>=30:
                 #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
@@ -161,7 +151,6 @@ class Cellular():
         #dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
         #dg.color_e(self.n, ped[0], ped[1])
-
         return idx_current
 
     def find_neighbors(self, x, y):
@@ -175,72 +164,6 @@ class Cellular():
                 neighbors.append(i)
         return neighbors
 
-    def get_there(self, next_cell):#not used
-        neighbors = self.find_neighbors(next_cell[0], next_cell[1])
-        for i in neighbors:
-            if self.grid[i[0]-1][i[1]-1] == 3:
-                dg.color_e(self.n, next_cell[0], next_cell[1])
-                self.grid[next_cell[0]-1][next_cell[1]-1] = 0
-                self.pedestrian.remove(next_cell)
-                return
-          
-    def not_dijkstra(self, tar, ped, step):#not used
-        self.set_dis_matrix(ped, rmax=0)
-        neighbors = self.find_neighbors(tar[0], tar[1])
-        cost = 0
-        path = []
-        visited = [tar]
-
-        for s in range(step):
-            cur_node = -1        
-            cur_min = 9999
-            for neighbor in neighbors:
-                if self.grid[neighbor[0]-1][neighbor[1]-1] == 2:
-                    visited.append(neighbor)
-                if neighbor not in visited:
-                    cur_dis = self.dis_matrix[neighbor[0]-1][neighbor[1]-1]
-                    print(cur_dis)
-                    visited.append(neighbor)
-                    if cur_dis < cur_min:
-                        cur_min = cur_dis
-                        cur_node = neighbor
-            if cur_node == -1: break                   
-            path.append(cur_node)
-            cost += cur_min     
-                
-            if cur_node == ped: break
-            neighbors = self.find_neighbors(cur_node[0], cur_node[1])
-
-        print(path)
-        return path
-    
-    def set_dijkstra_field(self):#not used
-        tar = self.target
-        frontier = [tar]
-        came_from = {}
-        came_from[tar] = None
-        cost_so_far = {}
-        cost_so_far[tar] = 0
-
-        #dont include obstacles
-        for i in range(self.n):
-            for j in range(self.n):
-                if self.grid[i][j] == 2:
-                    self.dis_dijkstra[i][j] = np.nan
-        #dijkstra for grids            
-        while frontier:
-            curr = frontier.pop(0)         
-            neighbors = self.find_neighbors(curr[0], curr[1])
-            for neighbor in neighbors:
-                new_cost = cost_so_far[curr] + 1
-                if neighbor not in cost_so_far and (np.isnan(self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1])==0):
-                    cost_so_far[neighbor] = new_cost
-                    self.dis_dijkstra[neighbor[0]-1][neighbor[1]-1] = new_cost
-                    frontier.append(neighbor)
-                    came_from[neighbor] = curr
-        
-        self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
-        return came_from, cost_so_far, self.dis_dijkstra    
     
     def set_mtar_dijkstra_field(self):#multiple target
         self.dis_dijkstra = np.zeros((self.n, self.n))
@@ -283,8 +206,7 @@ class Cellular():
         
         self.dis_dijkstra /= np.nanmax(self.dis_dijkstra)
         return self.dis_dijkstra
-    
-    
+       
     def set_board(self):
         if self.dijk == 1:
             self.set_mtar_dijkstra_field()
@@ -311,8 +233,7 @@ class Cellular():
         else:
             flag_move = 0
             return flag_move
-            
-    
+             
     def update_board(self, rmax=0):
         for p in self.pedestrian:
             flag_move = self.is_moving(p)            
@@ -331,8 +252,4 @@ class Cellular():
         self.total_iterations += 1
         my_board = np.transpose(self.grid)
         return my_board
-    
-
-        
-
         

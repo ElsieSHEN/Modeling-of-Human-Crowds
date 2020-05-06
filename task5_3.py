@@ -13,7 +13,6 @@ from utils import *
 
 # dijk: 1-Dijkstra algorithm / 0-Distances matrix
 
-
 test3 = Cellular(50, method='avoidance', pedestrian=[], remove=1, dijk=1)
 
 #dg.init_grid(50)

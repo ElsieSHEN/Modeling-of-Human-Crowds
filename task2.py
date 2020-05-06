@@ -22,11 +22,6 @@ task2 = Cellular(50, method='euclidean', pedestrian=[])
 task2.set_pedestrian(5, 25)
 task2.set_target(25, 25)
 
-#for i in range(25):
-#    task2.next_step(task2.pedestrian[0], 50)
-#turtle.done()
-
-
 
 #draw distance matrix
 task2.set_board()

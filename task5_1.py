@@ -13,8 +13,6 @@ from utils import *
 
 # dijk: 1-Dijkstra algorithm / 0-Distances matrix
 
-
-
 n = 100
 
 #turtle.setup(800,1200)
@@ -28,12 +26,6 @@ for i in range(1,101):
     task5_1.set_obstacle(i, 47)
     task5_1.set_obstacle(i, 53)
 
-   
-#for i in range(100):
-#    for p in task5_1.pedestrian:
-#        task5_1.next_step(p, n)
-#turtle.done()
-        
 
 #%matplotlib notebook
 

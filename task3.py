@@ -25,11 +25,6 @@ task3.set_pedestrian(25, 40)
 
 task3.set_target(25, 25)
 
-#for i in range(10):
-#    for p in task3.pedestrian:
-#        task3.next_step(p, 50, rmax=4)
-#turtle.done()
-
 #%matplotlib notebook
 task3.set_board()
 my_board = np.transpose(task3.grid)

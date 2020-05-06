@@ -60,9 +60,3 @@ anim = animation.FuncAnimation(fig, animate, frames=200,
                                interval=50)
 plt.show()
 
-#for i in range(50):
-#    for p in task0.pedestrian:
-#        task0.next_step(p, n, rmax=2)
-
-#turtle.done()
-#came_from, cost_so_far = task0.maybe_dijkstra(task0.target, task0.pedestrian)

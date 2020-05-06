@@ -2,7 +2,7 @@ import turtle
 import numpy as np
 import math
 import draw_grid as dg
-
+import matplotlib.pyplot as plt
 from utils import *
 from random import *
 
@@ -48,7 +48,7 @@ plt.show()
 #plot avg speed of different age
 age=[20, 30, 40, 50, 60, 70, 80]
 speed=np.zeros((7, 8))
-n_speed = np.zeros(7)
+n_speed = np.ones(7)
 avg_speed=[]
 
 speed[0][0] = 1
@@ -61,10 +61,10 @@ for p in task5_4.stat:
             n_speed[i]+=1
             
 for i in range(7):
+    #if n_speed[i] != 0:
     avg_speed.append(sum(speed[i])/n_speed[i])
 
-
-
+plt.figure(2)
 plt.plot(age, avg_speed)
 plt.ylim(0, 2.5)
 plt.xlabel('age [years]')

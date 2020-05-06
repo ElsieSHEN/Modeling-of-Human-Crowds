@@ -42,7 +42,7 @@ for j in range(26,62):
 # set pedestrians
 for i in range(1,17,2):
     for j in range(27,62,2):
-        task4_1.set_pedestrian(i,j,60)
+        task4_1.set_pedestrian(i,j)
                
 task4_1.set_target(88, 44)
 
@@ -60,15 +60,3 @@ def animate(frame):
 anim = animation.FuncAnimation(fig, animate, frames=200, 
                                interval=50)
 plt.show()
-
-#for i in range(5):
-#    ListofImages.append(task4_1.grid)
-#    for p in task4_1.pedestrian:
-#            task4_1.next_step(p, n, rmax=2)
-
-#turtle.done()         
-#plot images
-#for i in ListofImages:
-#    i = i.transpose()
-#    plt.imshow(i)
-#    plt.show() 
