@@ -17,20 +17,24 @@ from utils import *
 test3 = Cellular(50, method='avoidance', pedestrian=[], remove=1, dijk=1)
 
 #dg.init_grid(50)
-for i in range(44, 24, -2):
-    test3.set_pedestrian(i, 49)
-    test3.set_pedestrian(i-1, 50)
-    test3.set_obstacle(i, 48)
-    test3.set_obstacle(i-1, 48)
-    test3.set_obstacle(48, i)
-    test3.set_obstacle(48, i-1)
+for i in range(34, 18, -2):
+    test3.set_pedestrian(i, 46)
+    test3.set_pedestrian(i, 50)
+    if i >= 22 and i % 4 == 2:
+        test3.set_pedestrian(i-1, 48)
 
-for i in range(4):
-    test3.set_obstacle(44+i, 48)
-    test3.set_obstacle(48, 44+i)
-    test3.set_obstacle(24-i, 48)
-    test3.set_obstacle(48, 24-i)
-test3.set_obstacle(48, 48)
+    test3.set_obstacle(i, 45)
+    test3.set_obstacle(i-1, 45)
+    test3.set_obstacle(45, i)
+    test3.set_obstacle(45, i-1)
+
+for i in range(10):
+    test3.set_obstacle(35+i, 45)
+    test3.set_obstacle(45, 35+i)
+    test3.set_obstacle(18-i, 45)
+    test3.set_obstacle(45, 18-i)
+
+test3.set_obstacle(45, 45)
 
 test3.set_target(50, 1)
 
@@ -51,7 +55,7 @@ im = plt.imshow(my_board)
 # Helper function that updates the board and returns a new image of
 # the updated board animate is the function that FuncAnimation calls
 def animate(frame):
-    im.set_data(test3.update_board(rmax=2))
+    im.set_data(test3.update_board(rmax=1.5))
     return im,
 
 # # This line creates the animation
