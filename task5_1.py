@@ -43,7 +43,7 @@ task5_1.set_board()
 my_board = np.transpose(task5_1.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-plt.show()
+
 
 def animate(frame):
     im.set_data(task5_1.update_board())
@@ -51,3 +51,6 @@ def animate(frame):
 
 anim = animation.FuncAnimation(fig, animate, frames=500, 
                                interval=333)
+plt.show()
+
+print("total time: " ,round(task5_1.total_iterations/3, 3))

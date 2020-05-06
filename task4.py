@@ -41,7 +41,7 @@ task4.set_obstacle(17, 11)
 #     dg.color_e(task4.n, ped[0], ped[1])
 # turtle.done()
 
-%matplotlib notebook
+#%matplotlib notebook
 
 task4.set_board()
 my_board = np.transpose(task4.grid)
@@ -49,7 +49,7 @@ my_board = np.transpose(task4.grid)
 fig = plt.gcf()
 
 im = plt.imshow(my_board)
-plt.show()
+
 
 def animate(frame):
     im.set_data(task4.update_board(rmax=2))
@@ -57,3 +57,4 @@ def animate(frame):
 
 anim = animation.FuncAnimation(fig, animate, frames=200, 
                                interval=100)
+plt.show()

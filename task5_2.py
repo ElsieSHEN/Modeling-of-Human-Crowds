@@ -22,7 +22,6 @@ task5_2 = Cellular(n, method='euclidean', pedestrian=[], target=[], remove=1, di
 
 
 
-
 for i in range(64, 76):
     task5_2.set_target(140, i)
 for i in range(1, 141):
@@ -46,7 +45,7 @@ for i in range(0, 140):
             empty_cell.append((i+1, j+1))
     
 
-n_ped = 1593 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
+n_ped = 134 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
 random_p = sample(empty_cell, n_ped)
 
 for p in random_p:
@@ -67,14 +66,13 @@ task5_2.set_board()
 my_board = np.transpose(task5_2.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-#plt.savefig(fname='task5_2', dpi=150)
 
 
 # Helper function that updates the board and returns a new image of
 # the updated board animate is the function that FuncAnimation calls
 def animate(frame):
     im.set_data(task5_2.update_board())
-    n_ped = 1593 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
+    n_ped = 134 #0.5P-134, 1P-269, 2P-538, 3P-806, 4P-1075, 5P-1344, 6P-1593
     if len(task5_2.pedestrian) < n_ped:
         h = min(n_ped - len(task5_2.pedestrian), 12)
         width = [64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75]
@@ -99,6 +97,5 @@ for p in task5_2.stat:
     time = p[2]*333/1000
     if time != 0:
         speed.append(dist/time)
-
 print("total time: " ,round(task5_2.total_iterations/3, 3))
 print("Average speed: " ,round(np.mean(speed), 3))

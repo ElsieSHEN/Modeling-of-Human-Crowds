@@ -30,12 +30,12 @@ task3.set_target(25, 25)
 #        task3.next_step(p, 50, rmax=4)
 #turtle.done()
 
-%matplotlib notebook
+#%matplotlib notebook
 task3.set_board()
 my_board = np.transpose(task3.grid)
 fig = plt.gcf()
 im = plt.imshow(my_board)
-plt.show()
+
 
 def animate(frame):
     im.set_data(task3.update_board(rmax=4))
@@ -43,3 +43,4 @@ def animate(frame):
 
 anim = animation.FuncAnimation(fig, animate, frames=200, 
                                interval=50)
+plt.show()

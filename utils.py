@@ -17,11 +17,11 @@ class Cellular():
         self.grid = np.zeros((self.n, self.n), dtype=int)
         self.dis_matrix = np.zeros(((self.n, self.n)))
         self.dis_dijkstra = np.zeros((self.n, self.n))
-        self.remove = remove
-        self.dijk = dijk
-        self.trans = trans
-        self.stat = []
-        self.total_iterations = 0
+        self.remove = remove     #flag:remove ped after reaching target
+        self.dijk = dijk         #flag:calculate Dijkstra distance
+        self.trans = trans        #flag:ignore transient response
+        self.stat = []               #speed data for statistic
+        self.total_iterations = 0       #passed time
         self.age_walk = np.array([[20,1],
                                  [30,0.969],
                                  [40,0.938],
@@ -38,12 +38,6 @@ class Cellular():
         self.grid[x-1][y-1] = 1
         self.pedestrian.append(tuple((x, y, age, count, iteration)))
         #dg.color_p(self.n, x, y)
-
-    #def set_target(self, x, y):
-    #    self.grid[x-1][y-1] = 3
-    #    self.target = (x, y)
-        #self.target.append(tuple((x, y)))
-        #dg.color_t(self.n, x, y)
     
     def set_target(self, x, y):#multiple target
         self.grid[x-1][y-1] = 3
@@ -132,10 +126,8 @@ class Cellular():
                     self.grid[ped[0]-1][ped[1]-1] = 0
                     self.stat.append((ped[2], ped[3], ped[4]))
                     self.pedestrian.remove(ped)
-                    return
-                return
-            #elif self.grid[i[0]-1][i[1]-1] == 1:
-            #    neighbors.remove(i)
+                    return -1
+                return -1
         
 
         # initialize dijkstra field. If method is avoidance it will recalculate cost field([Yun]move it out)    
@@ -147,27 +139,30 @@ class Cellular():
             idx = self.find_next(ped, self.target, neighbors, rmax)
            
         if idx == -1:
-            return
+            return idx_current
         next_cell = neighbors[idx]           
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 2:
-            return
+            return idx_current
         if self.grid[next_cell[0]-1][next_cell[1]-1] == 1:
-            return 
+            return idx_current
         
-        #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
+       
         if self.trans == 1:
             if self.total_iterations>=30:
-                temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
+                #temporary tuple, so pedestrian (tuple) can continue to have their age (appending tuple)
+                temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4]) 
             else:
                 temp_tuple = next_cell + (ped[2], ped[3], ped[4])
         else:
             temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
+        temp_tuple = next_cell + (ped[2], ped[3]+1, ped[4])
         self.pedestrian[idx_current] = temp_tuple
-        #print("pedestrian ", self.pedestrian)
         self.grid[next_cell[0]-1][next_cell[1]-1] = 1
         #dg.color_p(self.n, next_cell[0], next_cell[1])
         self.grid[ped[0]-1][ped[1]-1] = 0
         #dg.color_e(self.n, ped[0], ped[1])
+
+        return idx_current
 
     def find_neighbors(self, x, y):
         neighbors = []
@@ -323,14 +318,16 @@ class Cellular():
             flag_move = self.is_moving(p)            
             idx_current = self.pedestrian.index(p)          
             if flag_move == 1:
-                self.next_step(p, self.n, rmax=rmax)
-            a = self.pedestrian[idx_current] 
-            temp_tuple = (a[0], a[1], a[2], a[3], a[4]+1)
-            if self.trans == 1:
-                if self.total_iterations >= 30:
+                idx_current = self.next_step(p, self.n, rmax=rmax)
+            if idx_current != -1:
+                a = self.pedestrian[idx_current] 
+                temp_tuple = (a[0], a[1], a[2], a[3], a[4]+1)
+                if self.trans == 1:
+                    if self.total_iterations >= 30:
+                        self.pedestrian[idx_current] = temp_tuple
+                else:
                     self.pedestrian[idx_current] = temp_tuple
-            else:
-                self.pedestrian[idx_current] = temp_tuple
+
         self.total_iterations += 1
         my_board = np.transpose(self.grid)
         return my_board

@@ -45,7 +45,7 @@ anim = animation.FuncAnimation(fig, animate, frames=30,
                                interval=250) #age 20 walking speed:1.6m/s, cell legth:0.4m
 plt.show()
 
-
+#plot avg speed of different age
 age=[20, 30, 40, 50, 60, 70, 80]
 speed=np.zeros((7, 8))
 n_speed = np.zeros(7)
