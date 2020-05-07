@@ -5,6 +5,9 @@ import draw_grid as dg
 import matplotlib.pyplot as plt
 from utils import *
 from random import *
+#Note: In this test, to obtain the accurate average speed plot, 
+#please close the animation after all pedestrians reach the target
+
 
 n = 125 #50m*50m plane 
 
@@ -48,7 +51,7 @@ plt.show()
 #plot avg speed of different age
 age=[20, 30, 40, 50, 60, 70, 80]
 speed=np.zeros((7, 8))
-n_speed = np.ones(7)
+n_speed = np.zeros(7)
 avg_speed=[]
 
 speed[0][0] = 1
@@ -61,7 +64,6 @@ for p in task5_4.stat:
             n_speed[i]+=1
             
 for i in range(7):
-    #if n_speed[i] != 0:
     avg_speed.append(sum(speed[i])/n_speed[i])
 
 plt.figure(2)
